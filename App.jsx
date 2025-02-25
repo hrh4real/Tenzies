@@ -11,8 +11,6 @@ export default function App() {
                 value: Math.ceil(Math.random() * 6),
                 isHeld: false
             }))
-        // OR 
-        // return Math.floor(Math.random() * 6) + 1
     }
     function rollDice() {
         setNumbers(RANDOM_NUMBER())
