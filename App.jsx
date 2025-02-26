@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Dice from "./src/components/Dice";
 import { nanoid } from "nanoid";
 import Confetti from "react-confetti";
@@ -6,8 +6,8 @@ import Confetti from "react-confetti";
 export default function App() {
     const [numbers, setNumbers] = useState(generateNumbers());
     const [rollCount, setRollCount] = useState(0);
-    const [gameWon, setGameWon] = useState(false);
-    const [windowSize, setWindowSize] = useState({ width: window.innerWidth, height: window.innerHeight })
+
+    let gameWon = false;
     
     function generateNumbers() {
         return Array.from({ length: 10 }, () => ({
@@ -36,26 +36,16 @@ export default function App() {
         ));
     }
 
-    useEffect(() => {
-        const allHeld = numbers.every(num => num.isHeld);
-        const allSameVal = numbers.every(num => num.value === numbers[0].value);
-
-        if (allHeld || allSameVal) {
-            setGameWon(true);
-        }
-    }, [numbers]);
-
-    useEffect(() => {
-        function handleConfetti() {
-            setWindowSize({width: window.innerWidth, height: window.innerHeight})
-        };
-        window.addEventListener("resize", handleConfetti)
-        return () => window.removeEventListener("resize", handleConfetti)
-    }, [])
+    if (
+        numbers.every(num => num.isHeld) &&
+        numbers.every(num => num.value === numbers[0].value)
+    ) {
+        gameWon = true;
+    }
 
     return (
         <main>
-            {gameWon && <Confetti height={windowSize.height} width={windowSize.width} />}
+            {gameWon && <Confetti />}
             {gameWon ? (
                 <div className="game-won">
                     <h1>🎉 You Won in {rollCount} Rolls! 🎉</h1>
