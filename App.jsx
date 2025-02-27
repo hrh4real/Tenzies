@@ -38,7 +38,7 @@ export default function App() {
     }
 
     useEffect(() => {
-        if (gameWon && newGameButtonRef.current) {
+        if (gameWon) {
             newGameButtonRef.current.focus();
         }
     }, [gameWon]);
