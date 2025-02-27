@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Dice from "./src/components/Dice";
 import { nanoid } from "nanoid";
 import Confetti from "react-confetti";
 
 export default function App() {
-    const [numbers, setNumbers] = useState(generateNumbers());
+    const [numbers, setNumbers] = useState(() => generateNumbers());
     const [rollCount, setRollCount] = useState(0);
+    const newGameButtonRef = useRef(null);
 
-    let gameWon = false;
+    let gameWon = numbers.every(num => num.isHeld) &&
+                    numbers.every(num => num.value === numbers[0].value);
     
     function generateNumbers() {
         return Array.from({ length: 10 }, () => ({
@@ -21,7 +23,6 @@ export default function App() {
         if (gameWon) {
             setNumbers(generateNumbers());  // Reset game
             setRollCount(0);
-            setGameWon(false);
         } else {
             setNumbers(prevNum => prevNum.map(num => 
                 num.isHeld ? num : { ...num, value: Math.ceil(Math.random() * 6) }
@@ -36,12 +37,11 @@ export default function App() {
         ));
     }
 
-    if (
-        numbers.every(num => num.isHeld) &&
-        numbers.every(num => num.value === numbers[0].value)
-    ) {
-        gameWon = true;
-    }
+    useEffect(() => {
+        if (gameWon && newGameButtonRef.current) {
+            newGameButtonRef.current.focus();
+        }
+    }, [gameWon]);
 
     return (
         <main>
@@ -49,7 +49,7 @@ export default function App() {
             {gameWon ? (
                 <div className="game-won">
                     <h1>🎉 You Won in {rollCount} Rolls! 🎉</h1>
-                    <button onClick={rollDice} className="roll-dice">Play Again</button>
+                    <button onClick={rollDice} className="roll-dice" ref={newGameButtonRef}>New Game</button>
                 </div>
             ) : (
                 <>

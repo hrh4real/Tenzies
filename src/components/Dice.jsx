@@ -9,6 +9,9 @@ export default function Dice(props) {
             // className={props.isHeld ? "hold-button" : ""}
             style={styles}
             onClick={props.hold}
+            aria-label={`Die with value ${props.value},
+            ${props.isHeld ? "held" : "not held"}`}
+            aria-pressed={props.isHeld}
         >
             {props.value}
         </button>
